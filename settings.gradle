@@ -1,0 +1,15 @@
+
+rootProject.name = 'rick'
+
+// Recurse all of the projects and find folders with a build.gradle in them,
+// if there is one, then include it.
+def tree = fileTree('.').include('**/build.gradle')
+tree.each {File file ->
+    def subProject = file.absolutePath.replace(rootDir.absolutePath.replace(".",""),"").replace("/build.gradle","").replace("/",":")
+    if (subProject != "build.gradle") {
+        include subProject
+    }
+}
+
+
+

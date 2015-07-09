@@ -1,0 +1,40 @@
+dependencies {
+    
+    // Lovely stuff from core
+    compile project (":core")
+    
+    // Needed for Netty
+    runtime "ch.qos.logback:logback-classic:1.1.3" 
+        
+    compile 'io.advantageous.qbit:qbit-core:0.8.13'
+    
+    // Used for Json Parsing, Faster than Jackson
+    compile 'io.advantageous.qbit:qbit-boon:0.8.13'
+    
+    // Lets have a HHTP container
+    compile 'io.advantageous.qbit:qbit-vertx:0.8.13'
+}
+
+// Client
+task qbitClient(dependsOn: [compileJava, processResources], type: JavaExec, group: "Run") {
+    main = 'mb.qbit.QbitClient'
+}
+
+// Server
+task qbitServer(dependsOn: [compileJava, processResources], type: JavaExec, group: "Run") {
+    main = 'mb.qbit.QbitServer'
+}
+
+// Demo
+task qbitDemo(dependsOn: [compileJava, processResources], type: JavaExec, group: "Run") {
+    main = 'mb.qbit.EchoWebSocket'
+}
+
+// Thi has to come after the definitions
+[qbitClient, qbitServer, qbitDemo].each { task ->
+    task.classpath = sourceSets.main.runtimeClasspath
+    // Async Logging
+    task.jvmArgs "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
+    task.jvmArgs "-XX:+UnlockCommercialFeatures"
+    task.jvmArgs "-XX:+FlightRecorder"
+}

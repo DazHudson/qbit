@@ -1,0 +1,16 @@
+/target
+**/target
+war-files
+**/.DS_Store
+**/logs
+/logs
+.classpath
+.project
+.settings/
+**/.nb-gradle
+/build
+**/build
+.gradle
+# idea files
+.idea
+*.iml

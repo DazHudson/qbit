@@ -1,0 +1,20 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+description = "core"
+
+dependencies {
+    
+    // Async logging
+    // Remember to set jvmArgs "-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector"
+    runtime "org.apache.logging.log4j:log4j-core:${logVersion}"
+    runtime "org.apache.logging.log4j:log4j-api:${logVersion}"    
+    runtime "com.lmax:disruptor:${disruptorVersion}"
+    
+    // Metrics
+    compile "io.dropwizard.metrics:metrics-core:${metricsVersion}"
+
+}

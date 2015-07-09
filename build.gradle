@@ -1,0 +1,82 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.10.1'
+  }
+}
+
+repositories {
+    mavenLocal();
+    mavenCentral();
+}
+
+import org.gradle.api.artifacts.*
+
+apply plugin: 'base' // To add "clean" task to the root project.
+apply plugin: 'eclipse'
+// This allows for the dependencyUpdates task, which looks to see if the latest
+// versions of dependencies are being used.
+apply plugin: 'com.github.ben-manes.versions'
+
+subprojects {
+
+    // add repositories
+    repositories {
+        mavenLocal();
+        mavenCentral();
+        jcenter()
+    }    
+
+    apply plugin: 'maven'
+    apply plugin: 'java'
+
+    //[compileJava, compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
+
+    logging.captureStandardOutput LogLevel.INFO
+    
+    // modify the test task (1) Add ninja.mode (2) logback config file (3) events to be logged
+    test {
+        systemProperty 'logback.configurationFile', 'logback-test.xml'
+
+        // turn off sub-project test reports
+        reports.html.enabled = false
+    
+        // show std output
+        testLogging.showStandardStreams = true
+
+        // set logging events. including standardOut, standardError will show logoutput to console
+        testLogging {
+            events "passed", "skipped", "failed", "standardOut", "standardError"
+        }
+
+        // ignore test failures
+        ignoreFailures = false;    
+    
+        // possible additional args
+        //minHeapSize = "128m"
+        //maxHeapSize = "512m"
+        //jvmArgs '-XX:MaxPermSize=256m'    
+    }
+    
+    apply from: rootProject.file('common.gradle')
+}
+
+task mergedJavadoc(type: Javadoc, description: 'Creates Javadoc from all the projects.') {
+    title = 'All modules'
+    destinationDir = new File(project.buildDir, 'merged-javadoc')
+
+    // Note: The closures below are executed lazily.
+    source {
+        subprojects*.sourceSets*.main*.allJava
+    }
+    classpath.from {
+        subprojects*.configurations*.compile*.copyRecursive({ !(it instanceof ProjectDependency); })*.resolve()
+    }
+}
+
+task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
+    gradleVersion = '2.0'
+}
