@@ -1,13 +1,9 @@
 package mb.qbit;
 
-import io.advantageous.boon.json.JsonFactory;
-import io.advantageous.boon.json.ObjectMapper;
 import io.advantageous.qbit.http.server.HttpServer;
 import static io.advantageous.qbit.http.server.HttpServerBuilder.httpServerBuilder;
 import io.advantageous.qbit.http.websocket.WebSocket;
 import java.util.function.Consumer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Start a HTTP Micro Service
